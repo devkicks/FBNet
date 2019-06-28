@@ -33,7 +33,7 @@ def train_supernet():
     create_directories_from_list([CONFIG_SUPERNET['logging']['path_to_tensorboard_logs']])
     
     logger = get_logger(CONFIG_SUPERNET['logging']['path_to_log_file'])
-    writer = SummaryWriter(log_dir=CONFIG_SUPERNET['logging']['path_to_tensorboard_logs'])
+    writer = SummaryWriter(logdir=CONFIG_SUPERNET['logging']['path_to_tensorboard_logs'])
     
     #### LookUp table consists all information about layers
     lookup_table = LookUpTable(calulate_latency=CONFIG_SUPERNET['lookup_table']['create_from_scratch'])
