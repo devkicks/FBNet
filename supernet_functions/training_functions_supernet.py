@@ -63,12 +63,21 @@ class TrainerSupernet:
         start_time = time.time()
         
         for step, (X, y) in enumerate(loader):
-            X, y = X.cuda(non_blocking=True), y.cuda(non_blocking=True)
+            # if cuda exists then run specifc code related to it    
+            if torch.cuda.is_available():
+                X, y = X.cuda(non_blocking=True), y.cuda(non_blocking=True)
+
             # X.to(device, non_blocking=True), y.to(device, non_blocking=True)
             N = X.shape[0]
             
             optimizer.zero_grad()
-            latency_to_accumulate = Variable(torch.Tensor([[0.0]]), requires_grad=True).cuda()
+            
+            # if cuda exists then run specifc code related to it    
+            if torch.cuda.is_available():
+                latency_to_accumulate = Variable(torch.Tensor([[0.0]]), requires_grad=True).cuda()
+            else:
+                latency_to_accumulate = Variable(torch.Tensor([[0.0]]), requires_grad=True)
+
             outs, latency_to_accumulate = model(X, self.temperature, latency_to_accumulate)
             loss = self.criterion(outs, y, latency_to_accumulate, self.losses_ce, self.losses_lat, N)
             loss.backward()

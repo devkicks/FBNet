@@ -27,8 +27,11 @@ def train_supernet():
     manual_seed = 1
     np.random.seed(manual_seed)
     torch.manual_seed(manual_seed)
-    torch.cuda.manual_seed_all(manual_seed)
-    torch.backends.cudnn.benchmark = True
+
+    # if cuda exists then run specifc code related to it    
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(manual_seed)
+        torch.backends.cudnn.benchmark = True
 
     create_directories_from_list([CONFIG_SUPERNET['logging']['path_to_tensorboard_logs']])
     
@@ -47,7 +50,12 @@ def train_supernet():
                                   CONFIG_SUPERNET['dataloading']['path_to_save_data'])
     
     #### Model
-    model = FBNet_Stochastic_SuperNet(lookup_table, cnt_classes=10).cuda()
+    # if cuda exists then run specifc code related to it    
+    if torch.cuda.is_available():
+        model = FBNet_Stochastic_SuperNet(lookup_table, cnt_classes=10).cuda()
+    else:
+        model = FBNet_Stochastic_SuperNet(lookup_table, cnt_classes=10)
+    
     model = model.apply(weights_init)
     model = nn.DataParallel(model, device_ids=[0])
     
