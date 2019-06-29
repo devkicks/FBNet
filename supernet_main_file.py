@@ -1,3 +1,4 @@
+import pdb
 import numpy as np
 import torch
 from torch import nn
@@ -93,9 +94,10 @@ def sample_architecture_from_the_supernet(unique_name_of_arch, hardsampling=True
     
     lookup_table = LookUpTable()
     model = FBNet_Stochastic_SuperNet(lookup_table, cnt_classes=10).cuda()
-    model = nn.DataParallel(model)
-
     load(model, CONFIG_SUPERNET['train_settings']['path_to_save_model'])
+    
+    model = nn.DataParallel(model)
+#    pdb.set_trace()
 
     ops_names = [op_name for op_name in lookup_table.lookup_table_operations]
     cnt_ops = len(ops_names)
