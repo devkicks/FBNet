@@ -1,4 +1,5 @@
 import timeit
+import collections
 import torch
 from collections import OrderedDict
 import gc
@@ -49,6 +50,10 @@ class LookUpTable:
                  calulate_latency=False):
         self.cnt_layers = len(search_space["input_shape"])
         # constructors for each operation
+        # UPDATE IMP - need to sort this otherwise it is not deterministic and messes up saving model in sample stage
+        self.lookup_table_operations = collections.OrderedDict(sorted({op_name : PRIMITIVES[op_name] for op_name in candidate_blocks}.items()))
+        print(self.lookup_table_operations)  
+        
         self.lookup_table_operations = {op_name : PRIMITIVES[op_name] for op_name in candidate_blocks}
         # arguments for the ops constructors. one set of arguments for all 9 constructors at each layer
         # input_shapes just for convinience
